@@ -1,9 +1,12 @@
 import logging
 
 from algokit_utils import (
+    ABICreateCallArgs,
     Account,
     ApplicationClient,
     ApplicationSpecification,
+    CommonCallParameters,
+    OnCompleteCallParameters,
     OnSchemaBreak,
     OnUpdate,
     OperationPerformed,
@@ -11,16 +14,22 @@ from algokit_utils import (
     is_localnet,
     transfer,
 )
+from algosdk.atomic_transaction_composer import (
+    AccountTransactionSigner,
+    AtomicTransactionComposer,
+    TransactionWithSigner,
+)
+from algosdk.transaction import AssetOptInTxn, AssetTransferTxn
 from algosdk.util import algos_to_microalgos
 from algosdk.v2client.algod import AlgodClient
 from algosdk.v2client.indexer import IndexerClient
 
-from smart_contracts import helloworld
+from . import option
 
 logger = logging.getLogger(__name__)
 
 # define contracts to build and/or deploy
-contracts = [helloworld.app]
+contracts = [option.app]
 
 
 # define deployment behaviour based on supplied app spec
@@ -32,7 +41,9 @@ def deploy(
 ) -> None:
     is_local = is_localnet(algod_client)
     match app_spec.contract.name:
-        case "HelloWorldApp":
+        case "Option":
+            ASA = 2
+
             app_client = ApplicationClient(
                 algod_client,
                 app_spec,
@@ -46,6 +57,14 @@ def deploy(
                 on_update=OnUpdate.UpdateApp if is_local else OnUpdate.Fail,
                 allow_delete=is_local,
                 allow_update=is_local,
+                create_args=ABICreateCallArgs(
+                    args={
+                        "time": 1000,
+                        "strike": 1000,
+                        "premium": 1000,
+                    },
+                    foreign_assets=[ASA],
+                ),
             )
 
             # if only just created, fund smart contract account
@@ -64,12 +83,73 @@ def deploy(
                 )
                 transfer(algod_client, transfer_parameters)
 
-            name = "world"
-            response = app_client.call("hello", name=name)
-            logger.info(
-                f"Called hello on {app_spec.contract.name} ({app_client.app_id}) "
-                f"with name={name}, received: {response.return_value}"
+            def log_state() -> None:
+                state = app_client.get_global_state()
+                logger.info(
+                    f"global state for {app_spec.contract.name} "
+                    f"({app_client.app_id}): {state}"
+                )
+
+            logger.info(f"deployer address: {deployer.address}")
+
+            log_state()
+
+            signer = AccountTransactionSigner(deployer.private_key)
+
+            atc = AtomicTransactionComposer()
+            atc.add_transaction(
+                TransactionWithSigner(
+                    AssetOptInTxn(
+                        sender=deployer.address,
+                        index=ASA,
+                        sp=algod_client.suggested_params(),
+                    ),
+                    signer,
+                )
             )
+            atc.submit(algod_client)
+
+            sp = algod_client.suggested_params()
+            sp.fee = 2 * sp.min_fee
+
+            response = app_client.call(
+                "opt_in_to_asa",
+                OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
+            )
+            logger.info(f"opt_in_to_asa response: {response.return_value}")
+
+            atc = AtomicTransactionComposer()
+
+            app_client.add_method_call(
+                atc,
+                "transfer_asa",
+                parameters=CommonCallParameters(foreign_assets=[ASA]),
+            )
+
+            atc.add_transaction(
+                TransactionWithSigner(
+                    AssetTransferTxn(
+                        sender=deployer.address,
+                        receiver=app_client.app_address,
+                        amt=1,
+                        index=ASA,
+                        sp=algod_client.suggested_params(),
+                    ),
+                    signer,
+                )
+            )
+
+            atc.submit(algod_client)
+
+            log_state()
+
+            app_client.call(
+                "cancel",
+                OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
+            )
+
+            log_state()
+
         case _:
             raise Exception(
                 f"Attempt to deploy unknown contract {app_spec.contract.name}"

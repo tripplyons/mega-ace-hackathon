@@ -1,8 +1,28 @@
-# mega-ace-hackathon
+# Mega Ace Hackathon Project
+
+## Overview
+
+A smart contract that allows NFT holders to sell options against their NFTs, and allows other users to buy those options.
+
+## Option Mechanics
+
+- Equity settled: the option is settled by transferring the NFT to the buyer for a strike price
+- European style: this can only be done once, before the expiry date
+- Call option: the buyer has the right to buy the NFT from the seller for a strike price
+
+## Progress
+
+- [x] Transfer NFT to smart contract
+- [x] Cancel option (if not bought)
+- [ ] Buy option
+- [ ] Exercise option
+- [ ] Expire option
+
+---
 
 This project has been generated using AlgoKit. See below for default getting started instructions.
 
-# Setup
+## Setup
 
 ### Initial setup
 
@@ -37,7 +57,7 @@ This project has been generated using AlgoKit. See below for default getting sta
 1. If you update to the latest source code and there are new dependencies you will need to run `algokit bootstrap all` again
 2. Follow step 3 above
 
-# Tools
+## Tools
 
 This project makes use of Python to build Algorand smart contracts. The following tools are in use:
 
@@ -48,5 +68,4 @@ This project makes use of Python to build Algorand smart contracts. The followin
 - [AlgoKit Utils](https://github.com/algorandfoundation/algokit-utils-py) - A set of core Algorand utilities that make it easier to build solutions on Algorand.
 - [Poetry](https://python-poetry.org/): Python packaging and dependency management.- [Black](https://github.com/psf/black): A Python code formatter.
 - [Ruff](https://github.com/charliermarsh/ruff): An extremely fast Python linter.
-
-- [mypy](https://mypy-lang.org/): Static type checker.It has also been configured to have a productive dev experience out of the box in VS Code, see the [.vscode](./.vscode) folder.
+- [mypy](https://mypy-lang.org/): Static type checker. It has also been configured to have a productive dev experience out of the box in VS Code, see the [.vscode](./.vscode) folder.
