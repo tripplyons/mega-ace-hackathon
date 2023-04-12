@@ -1,12 +1,9 @@
 import logging
 
 from algokit_utils import (
-    ABICreateCallArgs,
     Account,
     ApplicationClient,
     ApplicationSpecification,
-    CommonCallParameters,
-    OnCompleteCallParameters,
     OnSchemaBreak,
     OnUpdate,
     OperationPerformed,
@@ -14,12 +11,6 @@ from algokit_utils import (
     is_localnet,
     transfer,
 )
-from algosdk.atomic_transaction_composer import (
-    AccountTransactionSigner,
-    AtomicTransactionComposer,
-    TransactionWithSigner,
-)
-from algosdk.transaction import AssetOptInTxn, AssetTransferTxn
 from algosdk.util import algos_to_microalgos
 from algosdk.v2client.algod import AlgodClient
 from algosdk.v2client.indexer import IndexerClient
@@ -42,14 +33,13 @@ def deploy(
     is_local = is_localnet(algod_client)
     match app_spec.contract.name:
         case "Option":
-            ASA = 2
-
             app_client = ApplicationClient(
                 algod_client,
                 app_spec,
                 creator=deployer,
                 indexer_client=indexer_client,
             )
+
             deploy_response = app_client.deploy(
                 on_schema_break=(
                     OnSchemaBreak.ReplaceApp if is_local else OnSchemaBreak.Fail
@@ -57,14 +47,6 @@ def deploy(
                 on_update=OnUpdate.UpdateApp if is_local else OnUpdate.Fail,
                 allow_delete=is_local,
                 allow_update=is_local,
-                create_args=ABICreateCallArgs(
-                    args={
-                        "time": 1000,
-                        "strike": 1000,
-                        "premium": 1000,
-                    },
-                    foreign_assets=[ASA],
-                ),
             )
 
             # if only just created, fund smart contract account
@@ -91,64 +73,65 @@ def deploy(
                 )
 
             logger.info(f"deployer address: {deployer.address}")
+            logger.info(f"deployer key: {deployer.private_key}")
 
             log_state()
 
-            signer = AccountTransactionSigner(deployer.private_key)
+            # signer = AccountTransactionSigner(deployer.private_key)
 
-            atc = AtomicTransactionComposer()
-            atc.add_transaction(
-                TransactionWithSigner(
-                    AssetOptInTxn(
-                        sender=deployer.address,
-                        index=ASA,
-                        sp=algod_client.suggested_params(),
-                    ),
-                    signer,
-                )
-            )
-            atc.submit(algod_client)
+            # atc = AtomicTransactionComposer()
+            # atc.add_transaction(
+            #     TransactionWithSigner(
+            #         AssetOptInTxn(
+            #             sender=deployer.address,
+            #             index=ASA,
+            #             sp=algod_client.suggested_params(),
+            #         ),
+            #         signer,
+            #     )
+            # )
+            # atc.execute(algod_client, wait_rounds=5)
 
-            sp = algod_client.suggested_params()
-            sp.fee = 2 * sp.min_fee
+            # sp = algod_client.suggested_params()
+            # sp.fee = 2 * sp.min_fee
 
-            response = app_client.call(
-                "opt_in_to_asa",
-                OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
-            )
-            logger.info(f"opt_in_to_asa response: {response.return_value}")
+            # response = app_client.call(
+            #     "opt_in_to_asa",
+            #     OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
+            # )
+            # logger.info(f"opt_in_to_asa response: {response.return_value}")
 
-            atc = AtomicTransactionComposer()
+            # atc = AtomicTransactionComposer()
 
-            app_client.add_method_call(
-                atc,
-                "transfer_asa",
-                parameters=CommonCallParameters(foreign_assets=[ASA]),
-            )
+            # atc.add_transaction(
+            #     TransactionWithSigner(
+            #         AssetTransferTxn(
+            #             sender=deployer.address,
+            #             receiver=app_client.app_address,
+            #             amt=1,
+            #             index=ASA,
+            #             sp=algod_client.suggested_params(),
+            #         ),
+            #         signer,
+            #     )
+            # )
 
-            atc.add_transaction(
-                TransactionWithSigner(
-                    AssetTransferTxn(
-                        sender=deployer.address,
-                        receiver=app_client.app_address,
-                        amt=1,
-                        index=ASA,
-                        sp=algod_client.suggested_params(),
-                    ),
-                    signer,
-                )
-            )
+            # app_client.add_method_call(
+            #     atc,
+            #     "transfer_asa",
+            #     parameters=CommonCallParameters(foreign_assets=[ASA]),
+            # )
 
-            atc.submit(algod_client)
+            # atc.execute(algod_client, wait_rounds=5)
 
-            log_state()
+            # log_state()
 
-            app_client.call(
-                "cancel",
-                OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
-            )
+            # app_client.call(
+            #     "cancel",
+            #     OnCompleteCallParameters(foreign_assets=[ASA], suggested_params=sp),
+            # )
 
-            log_state()
+            # log_state()
 
         case _:
             raise Exception(

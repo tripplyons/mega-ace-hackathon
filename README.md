@@ -12,11 +12,20 @@ A smart contract that allows NFT holders to sell options against their NFTs, and
 
 ## Progress
 
-- [x] Transfer NFT to smart contract
-- [x] Cancel option (if not bought)
-- [ ] Buy option
-- [ ] Exercise option
-- [ ] Expire option
+- [ ] Smart Contract
+  - [x] Transfer NFT to smart contract
+  - [x] Cancel option (if not bought)
+  - [x] Buy option
+  - [x] Exercise option
+  - [x] Expire option
+  - [ ] Tests
+- [ ] Frontend
+  - [x] Connect wallet
+  - [ ] Create option
+  - [ ] Buy option
+  - [ ] Exercise option
+  - [ ] Cancel option
+  - [ ] Expire option
 
 ---
 
