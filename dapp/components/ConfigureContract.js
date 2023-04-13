@@ -53,7 +53,107 @@ export default function ConfigureContract({ addToHistory }) {
 
     const result = await algosdk.waitForConfirmation(algodClient, id, 4)
 
-    addToHistory('Configured contract at index ' + appIndex + ', with NFT ' + nftId + ', strike price ' + strikePrice + ', premium ' + premium + ', and expiry ' + daysToExpiry + ' days.')
+    addToHistory('Configured contract at index ' + appIndex + ', with NFT ' + nftId + ', strike price ' + strikePrice + ', premium ' + premium + ', and expiry in ' + daysToExpiry + ' days.')
+  }
+  async function fundContract() {
+    const sp = await algodClient.getTransactionParams().do()
+
+    const appAddress = algosdk.getApplicationAddress(parseInt(appIndex))
+
+    const txnParams = {
+      from: activeAddress,
+      to: appAddress,
+      suggestedParams: sp,
+      amount: algosdk.algosToMicroalgos(0.5)
+    }
+
+    const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txnParams)
+
+    const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
+
+    const signedTxns = await signTransactions([encodedTxn])
+
+    const { id } = await sendTransactions(signedTxns, 4)
+
+    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
+
+    addToHistory('Funded contract at index ' + appIndex + '.')
+  }
+  async function optIn() {
+    let sp = await algodClient.getTransactionParams().do()
+    sp.fee *= 2
+
+    const encoder = new TextEncoder()
+
+    const txnParams = {
+      from: activeAddress,
+      onComplete: algosdk.OnApplicationComplete.NoOpOC,
+      suggestedParams: sp,
+      appIndex: parseInt(appIndex),
+      appArgs: [
+        encoder.encode("opt_in")
+      ],
+      foreignAssets: [parseInt(nftId)]
+    }
+
+    const txn = algosdk.makeApplicationCallTxnFromObject(txnParams)
+
+    const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
+
+    const signedTxns = await signTransactions([encodedTxn])
+
+    const { id } = await sendTransactions(signedTxns, 4)
+
+    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
+
+    addToHistory('Opted contract with index ' + appIndex + ' into NFT with index ' + nftId + '.')
+  }
+  async function custody() {
+    const sp = await algodClient.getTransactionParams().do()
+
+    const encoder = new TextEncoder()
+
+    const appAddress = algosdk.getApplicationAddress(parseInt(appIndex))
+
+    const txn0Params = {
+      from: activeAddress,
+      suggestedParams: sp,
+      assetIndex: parseInt(nftId),
+      to: appAddress,
+      amount: 1
+    }
+
+    const txn0 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn0Params)
+
+    const txn1Params = {
+      from: activeAddress,
+      onComplete: algosdk.OnApplicationComplete.NoOpOC,
+      suggestedParams: sp,
+      appIndex: parseInt(appIndex),
+      appArgs: [
+        encoder.encode("custody")
+      ],
+      foreignAssets: [parseInt(nftId)]
+    }
+
+    const txn1 = algosdk.makeApplicationCallTxnFromObject(txn1Params)
+
+    const transactions = [txn0, txn1]
+    const txnGroup = algosdk.assignGroupID(transactions);
+
+    const txnGroupEncoded = txnGroup.map((txn, index) => {
+      return algosdk.encodeUnsignedTransaction(txn);
+    });
+
+    const signedTxns = await signTransactions(
+      txnGroupEncoded
+    );
+
+    const { id } = await sendTransactions(signedTxns, 4)
+
+    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
+
+    addToHistory('Sent NFT with index ' + nftId + ' to contract at index ' + appIndex + '.')
   }
 
   return (
@@ -81,6 +181,36 @@ export default function ConfigureContract({ addToHistory }) {
           className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
         >
           Configure Contract
+        </button>
+      </div>
+      <div className="mt-4">
+        <button
+          onClick={() => {
+            fundContract()
+          }}
+          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
+        >
+          Fund Contract
+        </button>
+      </div>
+      <div className="mt-4">
+        <button
+          onClick={() => {
+            optIn()
+          }}
+          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
+        >
+          Opt In Contract to NFT
+        </button>
+      </div>
+      <div className="mt-4">
+        <button
+          onClick={() => {
+            custody()
+          }}
+          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
+        >
+          Send NFT to Contract
         </button>
       </div>
 

@@ -23,7 +23,9 @@ An Algorand smart contract and dapp that allows NFT holders to sell options agai
   - [x] Connect wallet
   - [x] Create option
   - [x] Configure option
-  - [ ] Set up custody
+  - [x] Fund contract
+  - [x] Approve contract for NFT
+  - [x] Set up custody
   - [ ] Buy option
   - [ ] Exercise option
   - [ ] Cancel option

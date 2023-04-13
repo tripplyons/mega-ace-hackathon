@@ -63,6 +63,8 @@ export default function MakeContract({ addToHistory }) {
     const result = await algosdk.waitForConfirmation(algodClient, id, 4)
 
     setAppIndex(result['application-index'])
+
+    console.log(result)
   }
 
   return (

@@ -48,11 +48,11 @@ export default function Tabs() {
         ))}
       </div>
       <div className="bg-gray-100 p-10">
-        <h1 className="text-4xl font-bold mb-4">{tabs[activeTab].name}</h1>
+        <h2 className="text-4xl font-bold mb-4">{tabs[activeTab].name}</h2>
         {tabs[activeTab].content}
       </div>
       <div className="mt-4 bg-gray-100 p-10">
-        <h1 className="text-4xl font-bold">History</h1>
+        <h2 className="text-4xl font-bold">History</h2>
         {history.map((h, index) => (
           <div key={index} className="mt-4 p-4 bg-white">
             <p>{h}</p>
