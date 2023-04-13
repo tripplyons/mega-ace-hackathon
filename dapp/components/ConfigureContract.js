@@ -24,7 +24,7 @@ export default function ConfigureContract({ addToHistory }) {
 
     const seconds = Math.floor(parseFloat(daysToExpiry) * 24 * 60 * 60)
     const strike_parsed = algosdk.algosToMicroalgos(parseFloat(strikePrice))
-    const premium_parsed = algosdk.algosToMicroalgos(0.01)
+    const premium_parsed = algosdk.algosToMicroalgos(parseFloat(premium))
 
     const encoder = new TextEncoder()
 

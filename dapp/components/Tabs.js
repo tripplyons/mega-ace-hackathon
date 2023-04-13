@@ -3,6 +3,8 @@ import Connect from '@/components/Connect'
 import MakeContract from '@/components/MakeContract'
 import ConfigureContract from '@/components/ConfigureContract'
 import MakeNFT from "./MakeNFT";
+import BuyOption from "./BuyOption";
+import ExerciseOption from "./ExerciseOption";
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
@@ -29,6 +31,14 @@ export default function Tabs() {
       name: "Configure Contract",
       content: <ConfigureContract addToHistory={addToHistory} />
     },
+    {
+      name: "Buy Option",
+      content: <BuyOption addToHistory={addToHistory} />
+    },
+    {
+      name: "Exercise Option",
+      content: <ExerciseOption addToHistory={addToHistory} />
+    }
   ]
 
   return (

@@ -5,7 +5,7 @@ def approval_program():
     on_creation = pt.Seq(
         [
             pt.App.globalPut(pt.Bytes("creator"), pt.Txn.sender()),
-            pt.App.globalPut(pt.Bytes("buyer"), pt.Int(0)),
+            pt.App.globalPut(pt.Bytes("buyer"), pt.Itob(pt.Int(0))),
             pt.App.globalPut(pt.Bytes("expiry"), pt.Int(0)),
             pt.App.globalPut(pt.Bytes("strike"), pt.Int(0)),
             pt.App.globalPut(pt.Bytes("premium"), pt.Int(0)),
@@ -29,10 +29,10 @@ def approval_program():
             # set params
             pt.App.globalPut(
                 pt.Bytes("expiry"),
-                pt.Global.latest_timestamp() + pt.Btoi(pt.Txn.application_args[0]),
+                pt.Global.latest_timestamp() + pt.Btoi(pt.Txn.application_args[1]),
             ),
-            pt.App.globalPut(pt.Bytes("strike"), pt.Txn.application_args[1]),
-            pt.App.globalPut(pt.Bytes("premium"), pt.Txn.application_args[2]),
+            pt.App.globalPut(pt.Bytes("strike"), pt.Btoi(pt.Txn.application_args[2])),
+            pt.App.globalPut(pt.Bytes("premium"), pt.Btoi(pt.Txn.application_args[3])),
             pt.App.globalPut(pt.Bytes("asa"), pt.Txn.assets[0]),
             pt.Return(pt.Int(1)),
         ]
@@ -99,7 +99,7 @@ def approval_program():
             # not completed
             pt.Assert(pt.App.globalGet(pt.Bytes("completed")) == pt.Int(0)),
             # ready
-            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) == pt.Int(1)),
+            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) != pt.Int(0)),
             # correct ASA
             pt.Assert(pt.App.globalGet(pt.Bytes("asa")) == pt.Txn.assets[0]),
             # complete
@@ -129,7 +129,7 @@ def approval_program():
             pt.Assert(pt.Global.group_size() == pt.Int(2)),
             pt.Assert(pt.Gtxn[0].type_enum() == pt.TxnType.Payment),
             pt.Assert(pt.Gtxn[0].amount() == pt.App.globalGet(pt.Bytes("premium"))),
-            pt.Assert(pt.Gtxn[0].receiver() == pt.App.globalGet(pt.Bytes("buyer"))),
+            pt.Assert(pt.Gtxn[0].receiver() == pt.App.globalGet(pt.Bytes("creator"))),
             # no buyer yet
             pt.Assert(pt.App.globalGet(pt.Bytes("buyer")) == pt.Itob(pt.Int(0))),
             pt.Assert(pt.Txn.sender() != pt.App.globalGet(pt.Bytes("creator"))),
@@ -140,7 +140,7 @@ def approval_program():
             # not completed
             pt.Assert(pt.App.globalGet(pt.Bytes("completed")) == pt.Int(0)),
             # ready
-            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) == pt.Int(1)),
+            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) != pt.Int(0)),
             # set buyer
             pt.App.globalPut(pt.Bytes("buyer"), pt.Txn.sender()),
             pt.Return(pt.Int(1)),
@@ -163,7 +163,7 @@ def approval_program():
             # not completed
             pt.Assert(pt.App.globalGet(pt.Bytes("completed")) == pt.Int(0)),
             # ready
-            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) == pt.Int(1)),
+            pt.Assert(pt.App.globalGet(pt.Bytes("ready")) != pt.Int(0)),
             # complete
             pt.App.globalPut(pt.Bytes("completed"), pt.Int(1)),
             # send ASA to buyer
@@ -195,7 +195,7 @@ def approval_program():
         # from the creator
         pt.Assert(pt.App.globalGet(pt.Bytes("creator")) == pt.Txn.sender()),
         # ready
-        pt.Assert(pt.App.globalGet(pt.Bytes("ready")) == pt.Int(1)),
+        pt.Assert(pt.App.globalGet(pt.Bytes("ready")) != pt.Int(0)),
         # complete
         pt.App.globalPut(pt.Bytes("completed"), pt.Int(1)),
         # send ASA back to creator
