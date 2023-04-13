@@ -1,13 +1,19 @@
 import { algodClient } from "@/src/algod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as algosdk from "algosdk";
 import option from "@/src/option.json";
 import { useWallet } from "@txnlab/use-wallet";
 
-export default function MakeContract() {
+export default function MakeContract({ addToHistory }) {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
 
   const [appIndex, setAppIndex] = useState(0)
+
+  useEffect(() => {
+    if (appIndex != 0) {
+      addToHistory("Contract created at index " + appIndex + ".")
+    }
+  }, [appIndex])
 
   if (!activeAddress) {
     return (
@@ -31,7 +37,7 @@ export default function MakeContract() {
       )
     )
 
-    let sp = await algodClient.getTransactionParams().do()
+    const sp = await algodClient.getTransactionParams().do()
 
     const txnParams = {
       from: activeAddress,
@@ -50,13 +56,9 @@ export default function MakeContract() {
 
     const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
 
-    console.log(txnParams)
-
     const signedTxns = await signTransactions([encodedTxn])
 
     const { id } = await sendTransactions(signedTxns, 4)
-
-    console.log(id)
 
     const result = await algosdk.waitForConfirmation(algodClient, id, 4)
 
@@ -69,14 +71,16 @@ export default function MakeContract() {
         makeContract()
       }}
         className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-      >Deploy Option Contract</button>
-      {
-        (appIndex == 0) ? (
-          <p>Contract not deployed.</p>
-        ) : (
-          <p>Contract deployed at index {appIndex}.</p>
-        )
-      }
+      >Make Option Contract</button>
+      <div className="mt-2">
+        {
+          (appIndex == 0) ? (
+            <p>Contract is not created yet.</p>
+          ) : (
+            <p>Contract created at index {appIndex}.</p>
+          )
+        }
+      </div>
     </div>
   )
 }

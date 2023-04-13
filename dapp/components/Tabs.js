@@ -1,21 +1,40 @@
 import { useState } from "react";
 import Connect from '@/components/Connect'
 import MakeContract from '@/components/MakeContract'
-import InteractWithContract from '@/components/InteractWithContract'
+import ConfigureContract from '@/components/ConfigureContract'
+import MakeNFT from "./MakeNFT";
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
-  const tabNames = ["Connect Wallet", "Make Contract", "Interact With Contract"];
-  const tabContents = [
-    <Connect />,
-    <MakeContract />,
-    <InteractWithContract />,
-  ];
+  const [history, setHistory] = useState([]);
+
+  function addToHistory(newHistory) {
+    setHistory([...history, newHistory]);
+  }
+
+  const tabs = [
+    {
+      name: "Connect Wallet",
+      content: <Connect addToHistory={addToHistory} />
+    },
+    {
+      name: "Make NFT",
+      content: <MakeNFT addToHistory={addToHistory} />
+    },
+    {
+      name: "Make Contract",
+      content: <MakeContract addToHistory={addToHistory} />
+    },
+    {
+      name: "Configure Contract",
+      content: <ConfigureContract addToHistory={addToHistory} />
+    },
+  ]
 
   return (
     <div>
       <div className="flex flex-row">
-        {tabNames.map((tabName, index) => (
+        {tabs.map((tab, index) => (
           <button
             key={index}
             onClick={() => setActiveTab(index)}
@@ -24,14 +43,22 @@ export default function Tabs() {
               : "bg-gray-300"
               } py-2 px-4`}
           >
-            {tabName}
+            {tab.name}
           </button>
         ))}
       </div>
       <div className="bg-gray-100 p-10">
-        <h1 className="text-4xl font-bold mb-4">{tabNames[activeTab]}</h1>
-        {tabContents[activeTab]}
+        <h1 className="text-4xl font-bold mb-4">{tabs[activeTab].name}</h1>
+        {tabs[activeTab].content}
       </div>
-    </div>
+      <div className="mt-4 bg-gray-100 p-10">
+        <h1 className="text-4xl font-bold">History</h1>
+        {history.map((h, index) => (
+          <div key={index} className="mt-4 p-4 bg-white">
+            <p>{h}</p>
+          </div>
+        ))}
+      </div>
+    </div >
   );
 }
