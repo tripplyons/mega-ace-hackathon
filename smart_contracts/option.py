@@ -49,8 +49,8 @@ app = (
 )
 
 
-@app.create
-def create(*, output: pt.abi.Uint64) -> pt.Expr:
+@app.create(authorize=beaker.Authorize.only_creator(), bare=True)
+def create() -> pt.Expr:
     return pt.Seq(
         # initial state
         app.state.creator.set(pt.Txn.sender()),
@@ -61,7 +61,6 @@ def create(*, output: pt.abi.Uint64) -> pt.Expr:
         app.state.completed.set(pt.Int(0)),
         app.state.ready.set(pt.Int(0)),
         app.state.asa.set(pt.Int(0)),
-        output.set(pt.Int(1)),
     )
 
 

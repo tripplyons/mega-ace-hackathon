@@ -11,6 +11,7 @@ from algokit_utils import (
     is_localnet,
     transfer,
 )
+from algosdk.mnemonic import from_private_key
 from algosdk.util import algos_to_microalgos
 from algosdk.v2client.algod import AlgodClient
 from algosdk.v2client.indexer import IndexerClient
@@ -73,7 +74,33 @@ def deploy(
                 )
 
             logger.info(f"deployer address: {deployer.address}")
-            logger.info(f"deployer key: {deployer.private_key}")
+            logger.info(f"deployer mnemonic: {from_private_key(deployer.private_key)}")
+            logger.info(f"app address: {app_client.app_address}")
+
+            # compile contracts
+
+            def compile_contract(source: str) -> str:
+                source = source.replace("TMPL_UPDATABLE", "0")
+                source = source.replace("TMPL_DELETABLE", "0")
+                return algod_client.compile(source)["result"]
+
+            compiled_approval = compile_contract(app_spec.approval_program)
+            compiled_clear = compile_contract(app_spec.clear_program)
+            import json
+
+            with open("smart_contracts/artifacts/Option/application.json") as f:
+                app = json.load(f)
+                state = app["state"]
+
+            with open("dapp/src/option.json", "w") as f:
+                json.dump(
+                    {
+                        "approval": compiled_approval,
+                        "clear": compiled_clear,
+                        "state": state,
+                    },
+                    f,
+                )
 
             log_state()
 

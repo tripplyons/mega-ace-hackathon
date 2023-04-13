@@ -1,12 +1,15 @@
+import Tabs from '@/components/Tabs'
 import { Inter } from 'next/font/google'
-import Connect from '@/components/Connect'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <main className={`${inter.className} flex min-h-screen flex-col items-center justify-between p-24`}>
-      <Connect></Connect>
+    <main className={`${inter.className} min-h-screen container mx-auto p-24 mt-4`}>
+      <header className='mb-4'>
+        <h1 className="text-6xl font-bold">NFT Call Options</h1>
+      </header>
+      <Tabs />
     </main>
   )
 }

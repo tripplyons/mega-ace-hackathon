@@ -1,44 +1,40 @@
 #pragma version 8
 intcblock 0 1 4 2
-bytecblock 0x63726561746f72 0x7265616479 0x151f7c75 0x657870697279 0x636f6d706c65746564 0x617361 0x6275796572 0x737472696b65 0x7072656d69756d
+bytecblock 0x63726561746f72 0x7265616479 0x657870697279 0x636f6d706c65746564 0x617361 0x151f7c75 0x6275796572 0x737472696b65 0x7072656d69756d
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l18
-txna ApplicationArgs 0
-pushbytes 0xd9285a74 // "create()uint64"
-==
-bnz main_l17
+bnz main_l16
 txna ApplicationArgs 0
 pushbytes 0xc9d0b54d // "set_params(uint64,uint64,uint64)uint64"
 ==
-bnz main_l16
+bnz main_l15
 txna ApplicationArgs 0
 pushbytes 0x5a7fcd6d // "opt_in_to_asa()uint64"
 ==
-bnz main_l15
+bnz main_l14
 txna ApplicationArgs 0
 pushbytes 0xb57922c0 // "transfer_asa()uint64"
 ==
-bnz main_l14
+bnz main_l13
 txna ApplicationArgs 0
 pushbytes 0x96fd0bb4 // "cancel()uint64"
 ==
-bnz main_l13
+bnz main_l12
 txna ApplicationArgs 0
 pushbytes 0xe8e7e67e // "buy()uint64"
 ==
-bnz main_l12
+bnz main_l11
 txna ApplicationArgs 0
 pushbytes 0xb832d418 // "exercise()uint64"
 ==
-bnz main_l11
+bnz main_l10
 txna ApplicationArgs 0
 pushbytes 0x7b0ed01c // "expire()uint64"
 ==
-bnz main_l10
+bnz main_l9
 err
-main_l10:
+main_l9:
 txn OnCompletion
 intc_0 // NoOp
 ==
@@ -48,9 +44,27 @@ intc_0 // 0
 &&
 assert
 callsub expire_9
-store 10
-bytec_2 // 0x151f7c75
-load 10
+store 9
+bytec 5 // 0x151f7c75
+load 9
+itob
+concat
+log
+intc_1 // 1
+return
+main_l10:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub exercise_8
+store 8
+bytec 5 // 0x151f7c75
+load 8
 itob
 concat
 log
@@ -65,10 +79,10 @@ intc_0 // 0
 !=
 &&
 assert
-callsub exercise_8
-store 9
-bytec_2 // 0x151f7c75
-load 9
+callsub buy_7
+store 7
+bytec 5 // 0x151f7c75
+load 7
 itob
 concat
 log
@@ -83,10 +97,10 @@ intc_0 // 0
 !=
 &&
 assert
-callsub buy_7
-store 8
-bytec_2 // 0x151f7c75
-load 8
+callsub cancel_6
+store 6
+bytec 5 // 0x151f7c75
+load 6
 itob
 concat
 log
@@ -101,10 +115,10 @@ intc_0 // 0
 !=
 &&
 assert
-callsub cancel_6
-store 7
-bytec_2 // 0x151f7c75
-load 7
+callsub transferasa_5
+store 5
+bytec 5 // 0x151f7c75
+load 5
 itob
 concat
 log
@@ -119,10 +133,10 @@ intc_0 // 0
 !=
 &&
 assert
-callsub transferasa_5
-store 6
-bytec_2 // 0x151f7c75
-load 6
+callsub optintoasa_4
+store 4
+bytec 5 // 0x151f7c75
+load 4
 itob
 concat
 log
@@ -137,10 +151,22 @@ intc_0 // 0
 !=
 &&
 assert
-callsub optintoasa_4
-store 5
-bytec_2 // 0x151f7c75
-load 5
+txna ApplicationArgs 1
+btoi
+store 0
+txna ApplicationArgs 2
+btoi
+store 1
+txna ApplicationArgs 3
+btoi
+store 2
+load 0
+load 1
+load 2
+callsub setparams_3
+store 3
+bytec 5 // 0x151f7c75
+load 3
 itob
 concat
 log
@@ -150,61 +176,17 @@ main_l16:
 txn OnCompletion
 intc_0 // NoOp
 ==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-txna ApplicationArgs 1
-btoi
-store 1
-txna ApplicationArgs 2
-btoi
-store 2
-txna ApplicationArgs 3
-btoi
-store 3
-load 1
-load 2
-load 3
-callsub setparams_3
-store 4
-bytec_2 // 0x151f7c75
-load 4
-itob
-concat
-log
-intc_1 // 1
-return
-main_l17:
-txn OnCompletion
-intc_0 // NoOp
-==
-txn ApplicationID
-intc_0 // 0
-==
-&&
-assert
-callsub create_2
-store 0
-bytec_2 // 0x151f7c75
-load 0
-itob
-concat
-log
-intc_1 // 1
-return
-main_l18:
+bnz main_l22
 txn OnCompletion
 intc_2 // UpdateApplication
 ==
-bnz main_l22
+bnz main_l21
 txn OnCompletion
 pushint 5 // DeleteApplication
 ==
-bnz main_l21
+bnz main_l20
 err
-main_l21:
+main_l20:
 txn ApplicationID
 intc_0 // 0
 !=
@@ -212,12 +194,20 @@ assert
 callsub delete_1
 intc_1 // 1
 return
-main_l22:
+main_l21:
 txn ApplicationID
 intc_0 // 0
 !=
 assert
 callsub update_0
+intc_1 // 1
+return
+main_l22:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+callsub create_2
 intc_1 // 1
 return
 
@@ -249,8 +239,12 @@ retsub
 
 // create
 create_2:
-proto 0 1
-intc_0 // 0
+proto 0 0
+txn Sender
+global CreatorAddress
+==
+// unauthorized
+assert
 bytec_0 // "creator"
 txn Sender
 app_global_put
@@ -258,7 +252,7 @@ bytec 6 // "buyer"
 intc_0 // 0
 itob
 app_global_put
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 intc_0 // 0
 app_global_put
 bytec 7 // "strike"
@@ -267,17 +261,15 @@ app_global_put
 bytec 8 // "premium"
 intc_0 // 0
 app_global_put
-bytec 4 // "completed"
+bytec_3 // "completed"
 intc_0 // 0
 app_global_put
 bytec_1 // "ready"
 intc_0 // 0
 app_global_put
-bytec 5 // "asa"
+bytec 4 // "asa"
 intc_0 // 0
 app_global_put
-intc_1 // 1
-frame_bury 0
 retsub
 
 // set_params
@@ -298,12 +290,12 @@ app_global_get
 intc_0 // 0
 ==
 assert
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 intc_0 // 0
 ==
 assert
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 global LatestTimestamp
 frame_dig -3
 +
@@ -314,7 +306,7 @@ app_global_put
 bytec 8 // "premium"
 frame_dig -1
 app_global_put
-bytec 5 // "asa"
+bytec 4 // "asa"
 txna Assets 0
 app_global_put
 intc_1 // 1
@@ -330,7 +322,7 @@ bytec_0 // "creator"
 app_global_get
 ==
 assert
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 intc_0 // 0
 !=
@@ -340,7 +332,7 @@ app_global_get
 intc_0 // 0
 ==
 assert
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 txna Assets 0
 ==
@@ -370,7 +362,7 @@ bytec_0 // "creator"
 app_global_get
 ==
 assert
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 intc_0 // 0
 !=
@@ -380,7 +372,7 @@ intc_1 // 1
 ==
 assert
 txna Assets 0
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 ==
 assert
@@ -406,7 +398,7 @@ intc_1 // 1
 ==
 assert
 gtxn 0 XferAsset
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 ==
 assert
@@ -432,7 +424,7 @@ intc_0 // 0
 itob
 ==
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 app_global_get
 intc_0 // 0
 ==
@@ -442,12 +434,12 @@ app_global_get
 intc_1 // 1
 ==
 assert
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 txna Assets 0
 ==
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 intc_1 // 1
 app_global_put
 itxn_begin
@@ -503,11 +495,11 @@ app_global_get
 !=
 assert
 global LatestTimestamp
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 <
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 app_global_get
 intc_0 // 0
 ==
@@ -552,11 +544,11 @@ txn Sender
 ==
 assert
 global LatestTimestamp
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 <
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 app_global_get
 intc_0 // 0
 ==
@@ -566,13 +558,13 @@ app_global_get
 intc_1 // 1
 ==
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 intc_1 // 1
 app_global_put
 itxn_begin
 intc_2 // axfer
 itxn_field TypeEnum
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 itxn_field XferAsset
 intc_1 // 1
@@ -594,11 +586,11 @@ expire_9:
 proto 0 1
 intc_0 // 0
 global LatestTimestamp
-bytec_3 // "expiry"
+bytec_2 // "expiry"
 app_global_get
 >=
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 app_global_get
 intc_0 // 0
 ==
@@ -613,13 +605,13 @@ app_global_get
 intc_1 // 1
 ==
 assert
-bytec 4 // "completed"
+bytec_3 // "completed"
 intc_1 // 1
 app_global_put
 itxn_begin
 intc_2 // axfer
 itxn_field TypeEnum
-bytec 5 // "asa"
+bytec 4 // "asa"
 app_global_get
 itxn_field XferAsset
 intc_1 // 1

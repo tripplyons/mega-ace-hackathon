@@ -2,13 +2,6 @@
     "name": "Option",
     "methods": [
         {
-            "name": "create",
-            "args": [],
-            "returns": {
-                "type": "uint64"
-            }
-        },
-        {
             "name": "set_params",
             "args": [
                 {
