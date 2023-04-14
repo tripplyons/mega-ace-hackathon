@@ -18,6 +18,7 @@ An Algorand smart contract and dapp that allows NFT holders to sell options agai
 
 - Python 3 and pip
 - Node.js and npm
+- A localnet node for algod (like [algokit](https://github.com/algorandfoundation/algokit-cli))
 
 ### Setup
 
@@ -48,6 +49,14 @@ python3 -m pip install -r requirements.txt
 ```
 
 #### Compile the smart contract
+
+This step requires your localnet node to be running. If you are using algokit, you can start it with:
+
+```sh
+algokit localnet start
+```
+
+Compile command:
 
 ```sh
 python3 contracts/option.py
