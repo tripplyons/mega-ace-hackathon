@@ -73,7 +73,7 @@ export default function ExpireOption({ addToHistory }) {
 
   return (
     <div>
-      If you sold an option, and it wasn't exercised before it expired, you can use this button to expire the option and get your NFT back.
+      If you sold an option, and it was not exercised before it expired, you can use this button to expire the option and get your NFT back.
 
       <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
 
