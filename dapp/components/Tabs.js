@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Connect from '@/components/Connect'
 import MakeContract from '@/components/MakeContract'
 import ConfigureContract from '@/components/ConfigureContract'
@@ -11,6 +11,32 @@ import ExpireOption from "./ExpireOption";
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
   const [history, setHistory] = useState([]);
+
+  function saveHistory() {
+    if (history.length > 0) {
+      localStorage.setItem("history", JSON.stringify(history));
+    }
+  }
+
+  function loadHistory() {
+    const savedHistory = localStorage.getItem("history");
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
+    }
+  }
+
+  function clearHistory() {
+    localStorage.removeItem("history");
+    setHistory([]);
+  }
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  useEffect(() => {
+    saveHistory();
+  }, [history]);
 
   function addToHistory(newHistory) {
     setHistory([...history, newHistory]);
@@ -72,13 +98,23 @@ export default function Tabs() {
         {tabs[activeTab].content}
       </div>
       <div className="mt-4 bg-gray-100 p-10">
-        <h2 className="text-4xl font-bold">History</h2>
+        <h2 className="text-4xl font-bold">Transaction History</h2>
         {history.map((h, index) => (
           <div key={index} className="mt-4 p-4 bg-white">
             <p>{h}</p>
           </div>
         ))}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              clearHistory()
+            }}
+            className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
+          >
+            Clear History
+          </button>
+        </div>
       </div>
-    </div >
+    </div>
   );
 }

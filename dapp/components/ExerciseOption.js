@@ -134,6 +134,10 @@ export default function ExerciseOption({ addToHistory }) {
 
   return (
     <div>
+      If you bough an option, you can pay an amount of ALGO equal to the strike price to the seller of an option and receive the NFT before the expiration date.
+
+      <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
+
       <p>Contract Index:</p>
       <input type="text" value={appIndex} onChange={(e) => setAppIndex(e.target.value)}
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />
@@ -146,6 +150,8 @@ export default function ExerciseOption({ addToHistory }) {
         >
           Opt In to Receiving NFT
         </button>
+      </div>
+      <div className="mt-4">
         <button
           onClick={() => {
             exerciseOption()

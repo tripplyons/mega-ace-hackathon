@@ -67,6 +67,10 @@ export default function CancelOption({ addToHistory }) {
 
   return (
     <div>
+      If you sold an option and wish to cancel any possible sale, you can cancel it and get your NFT back. This requires there to be no buyer for the option yet.
+
+      <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
+
       <p>Contract Index:</p>
       <input type="text" value={appIndex} onChange={(e) => setAppIndex(e.target.value)}
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />

@@ -27,11 +27,14 @@
   - [x] Exercise option
   - [x] Cancel option
   - [x] Expire option
+- [ ] Interface Improvements
+  - [ ] Group transactions where possible
+  - [x] Explain each transaction
 - [ ] Comments
   - [ ] Smart Contract
   - [ ] Frontend
-- [ ] Documentation
-  - [ ] Smart Contract
-  - [ ] Frontend
+- [x] Documentation
+  - [x] Smart Contract
+  - [x] Frontend
 - [ ] Write up
 - [ ] Pitch video

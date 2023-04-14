@@ -9,6 +9,10 @@ export default function Connect() {
   // Finally, map through the `accounts` property to render a dropdown for each connected account.
   return (
     <div>
+      Connect one of the support wallets to get started with the dapp.
+
+      <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
+
       {providers?.map((provider) => (
         <div key={'provider-' + provider.metadata.id} className='p-2 b-2'>
           <h4 className='font-semibold text-gray-800'>

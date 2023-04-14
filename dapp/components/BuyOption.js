@@ -86,6 +86,10 @@ export default function BuyOption({ addToHistory }) {
 
   return (
     <div>
+      Buy an option contract from another user who is selling it.
+
+      <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
+
       <p>Contract Index:</p>
       <input type="text" value={appIndex} onChange={(e) => setAppIndex(e.target.value)}
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />

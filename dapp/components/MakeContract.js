@@ -69,6 +69,10 @@ export default function MakeContract({ addToHistory }) {
 
   return (
     <div>
+      Create a smart contract representing a call option you wish to sell.
+
+      <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
+
       <button onClick={() => {
         makeContract()
       }}

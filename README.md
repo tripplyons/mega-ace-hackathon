@@ -45,7 +45,7 @@ On Windows:
 python3 -m pip install -r requirements.txt
 ```
 
-### Compile the smart contract
+#### Compile the smart contract
 
 ```sh
 python3 contracts/option.py
