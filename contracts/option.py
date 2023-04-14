@@ -248,5 +248,13 @@ if __name__ == "__main__":
     approval_compiled = algod.compile(approval)["result"]
     clear_compiled = algod.compile(clear)["result"]
 
-    print(approval_compiled)
-    print(clear_compiled)
+    import json
+
+    with open("dapp/src/option.json", "r") as f:
+        option = json.load(f)
+
+    option["approval"] = approval_compiled
+    option["clear"] = clear_compiled
+
+    with open("dapp/src/option.json", "w") as f:
+        json.dump(option, f)

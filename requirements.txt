@@ -1,0 +1,2 @@
+py-algorand-sdk==2.1.2
+pyteal==0.24.0
