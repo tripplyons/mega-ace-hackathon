@@ -1,0 +1,37 @@
+# TODO
+
+- [x] Smart contract
+  - [x] Transfer NFT to smart contract
+    - [x] Implementation
+    - [x] Tests
+  - [x] Cancel option (if not bought)
+    - [x] Implementation
+    - [x] Tests
+  - [x] Buy option
+    - [x] Implementation
+    - [x] Tests
+  - [x] Exercise option
+    - [x] Implementation
+    - [x] Tests
+  - [x] Expire option
+    - [x] Implementation
+    - [x] Tests
+- [x] Frontend
+  - [x] Connect wallet
+  - [x] Create option
+  - [x] Configure option
+  - [x] Fund contract
+  - [x] Approve contract for NFT
+  - [x] Set up custody
+  - [x] Buy option
+  - [x] Exercise option
+  - [x] Cancel option
+  - [x] Expire option
+- [ ] Comments
+  - [ ] Smart Contract
+  - [ ] Frontend
+- [ ] Documentation
+  - [ ] Smart Contract
+  - [ ] Frontend
+- [ ] Write up
+- [ ] Pitch video
