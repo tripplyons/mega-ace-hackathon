@@ -37,6 +37,8 @@ export default function MakeContract({ addToHistory }) {
       )
     )
 
+    // create the contract
+
     const sp = await algodClient.getTransactionParams().do()
 
     const txnParams = {

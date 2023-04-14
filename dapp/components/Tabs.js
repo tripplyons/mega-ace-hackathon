@@ -8,6 +8,8 @@ import ExerciseOption from "./ExerciseOption";
 import CancelOption from "./CancelOption";
 import ExpireOption from "./ExpireOption";
 
+// switch between functions for user to interact with
+// and keep track of history of transactions
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
   const [history, setHistory] = useState([]);

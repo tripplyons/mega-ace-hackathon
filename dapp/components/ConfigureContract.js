@@ -20,7 +20,7 @@ export default function ConfigureContract({ addToHistory }) {
     )
   }
   async function configureContract() {
-    const sp0 = await algodClient.getTransactionParams().do()
+    // load info from the contract
 
     const seconds = Math.floor(parseFloat(daysToExpiry) * 24 * 60 * 60)
     const strike_parsed = algosdk.algosToMicroalgos(parseFloat(strikePrice))
@@ -28,6 +28,8 @@ export default function ConfigureContract({ addToHistory }) {
 
     const encoder = new TextEncoder()
 
+    // 1st transaction - set the params on the contract
+    const sp0 = await algodClient.getTransactionParams().do()
     const txn0Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
@@ -45,6 +47,7 @@ export default function ConfigureContract({ addToHistory }) {
     const txn0 = algosdk.makeApplicationCallTxnFromObject(txn0Params)
 
 
+    // 2nd transaction - fund the contract with 0.5 ALGO for fees
 
     const appAddress = algosdk.getApplicationAddress(parseInt(appIndex))
     const sp1 = await algodClient.getTransactionParams().do()
@@ -57,6 +60,7 @@ export default function ConfigureContract({ addToHistory }) {
 
     const txn1 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn1Params)
 
+    // 3rd transaction - opt in the contract into the NFT
 
     let sp2 = await algodClient.getTransactionParams().do()
     sp2.fee *= 2
@@ -72,6 +76,9 @@ export default function ConfigureContract({ addToHistory }) {
       foreignAssets: [parseInt(nftId)]
     }
     const txn2 = algosdk.makeApplicationCallTxnFromObject(txn2Params)
+
+    // 4th transaction - transfer the NFT to the contract
+
     const sp3 = await algodClient.getTransactionParams().do()
 
     const encoder3 = new TextEncoder()
@@ -85,6 +92,8 @@ export default function ConfigureContract({ addToHistory }) {
     }
 
     const txn3 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn3Params)
+
+    // 5th transaction - set the contract to custody the NFT
 
     const sp4 = await algodClient.getTransactionParams().do()
     const txn4Params = {
@@ -100,6 +109,7 @@ export default function ConfigureContract({ addToHistory }) {
 
     const txn4 = algosdk.makeApplicationCallTxnFromObject(txn4Params)
 
+    // group and sign
 
     const transactions = [txn0, txn1, txn2, txn3, txn4]
     const txnGroup = algosdk.assignGroupID(transactions);

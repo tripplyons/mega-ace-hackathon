@@ -8,6 +8,11 @@ export default function Home() {
     <main className={`${inter.className} min-h-screen container mx-auto p-24 mt-4`}>
       <header className='mb-4'>
         <h1 className="text-6xl font-bold">NFT Call Options</h1>
+        <ul className='mt-4'>
+          <li><a
+            className='text-blue-500 hover:text-blue-300 underline'
+            href="https://github.com/tripplyons/mega-ace-hackathon">GitHub</a></li>
+        </ul>
       </header>
       <Tabs />
     </main>

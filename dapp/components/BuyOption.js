@@ -16,8 +16,7 @@ export default function BuyOption({ addToHistory }) {
     )
   }
   async function buyOption() {
-    const sp = await algodClient.getTransactionParams().do()
-
+    // load info from the contract
 
     const appInfo = await algodClient.getApplicationByID(appIndex).do();
     let premium = 0;
@@ -42,22 +41,27 @@ export default function BuyOption({ addToHistory }) {
 
     console.log(premium);
 
+    // 1st transaction - pay the premium to the creator
 
+    const sp0 = await algodClient.getTransactionParams().do()
     const encoder = new TextEncoder()
 
     const txn0Params = {
       from: activeAddress,
-      suggestedParams: sp,
+      suggestedParams: sp0,
       to: creator,
       amount: premium,
     }
 
     const txn0 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn0Params)
 
+    // 2nd transaction - call the buy method on the contract
+
+    const sp1 = await algodClient.getTransactionParams().do()
     const txn1Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
-      suggestedParams: sp,
+      suggestedParams: sp1,
       appIndex: parseInt(appIndex),
       appArgs: [
         encoder.encode("buy")
@@ -65,6 +69,8 @@ export default function BuyOption({ addToHistory }) {
     }
 
     const txn1 = algosdk.makeApplicationCallTxnFromObject(txn1Params)
+
+    // group the transactions
 
     const transactions = [txn0, txn1]
     const txnGroup = algosdk.assignGroupID(transactions);

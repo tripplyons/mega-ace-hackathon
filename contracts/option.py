@@ -4,6 +4,7 @@ import pyteal as pt
 def approval_program():
     on_creation = pt.Seq(
         [
+            # set initial values
             pt.App.globalPut(pt.Bytes("creator"), pt.Txn.sender()),
             pt.App.globalPut(pt.Bytes("buyer"), pt.Itob(pt.Int(0))),
             pt.App.globalPut(pt.Bytes("expiry"), pt.Int(0)),
@@ -16,6 +17,7 @@ def approval_program():
         ]
     )
 
+    # called by creator to set params
     set_params = pt.Seq(
         [
             # from the creator
@@ -38,6 +40,7 @@ def approval_program():
         ]
     )
 
+    # allows contract to receive ASA
     opt_in_to_asa = pt.Seq(
         [
             # from the creator
@@ -66,7 +69,8 @@ def approval_program():
         ]
     )
 
-    transfer_asa = pt.Seq(
+    # called to hold ASA in custody of the contract
+    custody = pt.Seq(
         [
             # from the creator
             pt.Assert(pt.Txn.sender() == pt.App.globalGet(pt.Bytes("creator"))),
@@ -89,6 +93,7 @@ def approval_program():
         ]
     )
 
+    # called by seller to cancel if not bought
     cancel = pt.Seq(
         [
             # from the creator
@@ -122,6 +127,7 @@ def approval_program():
         ]
     )
 
+    # called by buyer to buy the option
     buy = pt.Seq(
         [
             # paid for the premium
@@ -146,6 +152,7 @@ def approval_program():
         ]
     )
 
+    # called by buyer to exercise the option
     exercise = pt.Seq(
         [
             # paid for the strike
@@ -185,6 +192,7 @@ def approval_program():
         ]
     )
 
+    # called by creator to trigger option expiry if not exercised
     expire = pt.Seq(
         # expired
         pt.Assert(pt.Global.latest_timestamp() >= pt.App.globalGet(pt.Bytes("expiry"))),
@@ -218,7 +226,7 @@ def approval_program():
         [pt.Txn.application_id() == pt.Int(0), on_creation],
         [pt.Txn.application_args[0] == pt.Bytes("params"), set_params],
         [pt.Txn.application_args[0] == pt.Bytes("opt_in"), opt_in_to_asa],
-        [pt.Txn.application_args[0] == pt.Bytes("custody"), transfer_asa],
+        [pt.Txn.application_args[0] == pt.Bytes("custody"), custody],
         [pt.Txn.application_args[0] == pt.Bytes("cancel"), cancel],
         [pt.Txn.application_args[0] == pt.Bytes("buy"), buy],
         [pt.Txn.application_args[0] == pt.Bytes("exercise"), exercise],

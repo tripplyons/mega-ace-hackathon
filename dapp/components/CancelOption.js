@@ -15,10 +15,9 @@ export default function CancelOption({ addToHistory }) {
       </div>
     )
   }
-  async function cancelOption() {
-    let sp = await algodClient.getTransactionParams().do()
 
-    sp.fee = 2000;
+  async function cancelOption() {
+    // load info from the contract
 
     const appInfo = await algodClient.getApplicationByID(appIndex).do();
     let asa = 0;
@@ -36,6 +35,13 @@ export default function CancelOption({ addToHistory }) {
         asa = globalState.value.uint;
       }
     }
+
+    // call the cancel method on the contract
+    let sp = await algodClient.getTransactionParams().do()
+
+    // extra fee for internal transactions
+
+    sp.fee = 2000;
 
     const encoder = new TextEncoder()
 

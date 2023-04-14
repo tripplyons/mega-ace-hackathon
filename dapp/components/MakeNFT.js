@@ -24,6 +24,8 @@ export default function MakeNFT({ addToHistory }) {
   }
 
   async function makeNFT() {
+    // make the NFT asset
+
     const sp = await algodClient.getTransactionParams().do()
 
     const txnParams = {

@@ -16,7 +16,7 @@ export default function ExerciseOption({ addToHistory }) {
     )
   }
   async function exerciseOption() {
-
+    // load info from the contract
 
     const appInfo = await algodClient.getApplicationByID(appIndex).do();
     let strike = 0;
@@ -45,6 +45,7 @@ export default function ExerciseOption({ addToHistory }) {
 
     console.log(strike);
 
+    // 1st transaction - opt the buyer into the ASA
 
     const sp0 = await algodClient.getTransactionParams().do()
 
@@ -58,6 +59,8 @@ export default function ExerciseOption({ addToHistory }) {
 
     const txn0 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn0Params)
 
+    // 2nd transaction - pay the strike price to the creator
+
     const sp1 = await algodClient.getTransactionParams().do()
     const encoder = new TextEncoder()
 
@@ -69,6 +72,8 @@ export default function ExerciseOption({ addToHistory }) {
     }
 
     const txn1 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn1Params)
+
+    // 3rd transaction - call the exercise method on the contract
 
     let sp2 = await algodClient.getTransactionParams().do()
     sp2.fee = 2000;
@@ -85,6 +90,8 @@ export default function ExerciseOption({ addToHistory }) {
     }
 
     const txn2 = algosdk.makeApplicationCallTxnFromObject(txn2Params)
+
+    // group transactions and sign
 
     const transactions = [txn0, txn1, txn2]
     const txnGroup = algosdk.assignGroupID(transactions);

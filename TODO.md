@@ -30,9 +30,9 @@
 - [x] Interface Improvements
   - [x] Group transactions where possible
   - [x] Explain each transaction
-- [ ] Comments
-  - [ ] Smart Contract
-  - [ ] Frontend
+- [x] Comments
+  - [x] Smart Contract
+  - [x] Frontend
 - [x] Documentation
   - [x] Smart Contract
   - [x] Frontend
