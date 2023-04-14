@@ -20,7 +20,7 @@ export default function ConfigureContract({ addToHistory }) {
     )
   }
   async function configureContract() {
-    const sp = await algodClient.getTransactionParams().do()
+    const sp0 = await algodClient.getTransactionParams().do()
 
     const seconds = Math.floor(parseFloat(daysToExpiry) * 24 * 60 * 60)
     const strike_parsed = algosdk.algosToMicroalgos(parseFloat(strikePrice))
@@ -28,10 +28,10 @@ export default function ConfigureContract({ addToHistory }) {
 
     const encoder = new TextEncoder()
 
-    const txnParams = {
+    const txn0Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
-      suggestedParams: sp,
+      suggestedParams: sp0,
       appIndex: parseInt(appIndex),
       appArgs: [
         encoder.encode("params"),
@@ -42,103 +42,66 @@ export default function ConfigureContract({ addToHistory }) {
       foreignAssets: [parseInt(nftId)]
     }
 
-    const txn = algosdk.makeApplicationCallTxnFromObject(txnParams)
+    const txn0 = algosdk.makeApplicationCallTxnFromObject(txn0Params)
 
 
-    const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
-
-    const signedTxns = await signTransactions([encodedTxn])
-
-    const { id } = await sendTransactions(signedTxns, 4)
-
-    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
-
-    addToHistory('Configured contract at index ' + appIndex + ', with NFT ' + nftId + ', strike price ' + strikePrice + ', premium ' + premium + ', and expiry in ' + daysToExpiry + ' days.')
-  }
-  async function fundContract() {
-    const sp = await algodClient.getTransactionParams().do()
 
     const appAddress = algosdk.getApplicationAddress(parseInt(appIndex))
-
-    const txnParams = {
+    const sp1 = await algodClient.getTransactionParams().do()
+    const txn1Params = {
       from: activeAddress,
       to: appAddress,
-      suggestedParams: sp,
+      suggestedParams: sp1,
       amount: algosdk.algosToMicroalgos(0.5)
     }
 
-    const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txnParams)
+    const txn1 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn1Params)
 
-    const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
 
-    const signedTxns = await signTransactions([encodedTxn])
-
-    const { id } = await sendTransactions(signedTxns, 4)
-
-    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
-
-    addToHistory('Funded contract at index ' + appIndex + '.')
-  }
-  async function optIn() {
-    let sp = await algodClient.getTransactionParams().do()
-    sp.fee *= 2
-
-    const encoder = new TextEncoder()
-
-    const txnParams = {
+    let sp2 = await algodClient.getTransactionParams().do()
+    sp2.fee *= 2
+    const encoder2 = new TextEncoder()
+    const txn2Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
-      suggestedParams: sp,
+      suggestedParams: sp2,
       appIndex: parseInt(appIndex),
       appArgs: [
-        encoder.encode("opt_in")
+        encoder2.encode("opt_in")
       ],
       foreignAssets: [parseInt(nftId)]
     }
+    const txn2 = algosdk.makeApplicationCallTxnFromObject(txn2Params)
+    const sp3 = await algodClient.getTransactionParams().do()
 
-    const txn = algosdk.makeApplicationCallTxnFromObject(txnParams)
+    const encoder3 = new TextEncoder()
 
-    const encodedTxn = algosdk.encodeUnsignedTransaction(txn)
-
-    const signedTxns = await signTransactions([encodedTxn])
-
-    const { id } = await sendTransactions(signedTxns, 4)
-
-    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
-
-    addToHistory('Opted contract with index ' + appIndex + ' into NFT with index ' + nftId + '.')
-  }
-  async function custody() {
-    const sp = await algodClient.getTransactionParams().do()
-
-    const encoder = new TextEncoder()
-
-    const appAddress = algosdk.getApplicationAddress(parseInt(appIndex))
-
-    const txn0Params = {
+    const txn3Params = {
       from: activeAddress,
-      suggestedParams: sp,
+      suggestedParams: sp3,
       assetIndex: parseInt(nftId),
       to: appAddress,
       amount: 1
     }
 
-    const txn0 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn0Params)
+    const txn3 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn3Params)
 
-    const txn1Params = {
+    const sp4 = await algodClient.getTransactionParams().do()
+    const txn4Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
-      suggestedParams: sp,
+      suggestedParams: sp4,
       appIndex: parseInt(appIndex),
       appArgs: [
-        encoder.encode("custody")
+        encoder3.encode("custody")
       ],
       foreignAssets: [parseInt(nftId)]
     }
 
-    const txn1 = algosdk.makeApplicationCallTxnFromObject(txn1Params)
+    const txn4 = algosdk.makeApplicationCallTxnFromObject(txn4Params)
 
-    const transactions = [txn0, txn1]
+
+    const transactions = [txn0, txn1, txn2, txn3, txn4]
     const txnGroup = algosdk.assignGroupID(transactions);
 
     const txnGroupEncoded = txnGroup.map((txn, index) => {
@@ -153,12 +116,12 @@ export default function ConfigureContract({ addToHistory }) {
 
     const result = await algosdk.waitForConfirmation(algodClient, id, 4)
 
-    addToHistory('Sent NFT with index ' + nftId + ' to contract at index ' + appIndex + '.')
+    addToHistory('Configured contract at index ' + appIndex + ', with NFT ' + nftId + ', strike price ' + strikePrice + ', premium ' + premium + ', and expiry in ' + daysToExpiry + ' days.')
   }
 
   return (
     <div>
-      Set up a smart contract with the settings you want. This will take multiple transaction approvals, which need to be done in order.
+      Set up a smart contract with the settings you want and fund it with 0.5 ALGO and 1 NFT.
 
       <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
 
@@ -184,37 +147,7 @@ export default function ConfigureContract({ addToHistory }) {
           }}
           className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
         >
-          Configure Contract
-        </button>
-      </div>
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            fundContract()
-          }}
-          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-        >
-          Fund Contract
-        </button>
-      </div>
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            optIn()
-          }}
-          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-        >
-          Opt In Contract to NFT
-        </button>
-      </div>
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            custody()
-          }}
-          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-        >
-          Send NFT to Contract
+          Configure and Fund Contract
         </button>
       </div>
     </div>

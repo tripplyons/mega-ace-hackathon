@@ -27,8 +27,8 @@
   - [x] Exercise option
   - [x] Cancel option
   - [x] Expire option
-- [ ] Interface Improvements
-  - [ ] Group transactions where possible
+- [x] Interface Improvements
+  - [x] Group transactions where possible
   - [x] Explain each transaction
 - [ ] Comments
   - [ ] Smart Contract

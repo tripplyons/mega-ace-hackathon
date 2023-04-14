@@ -77,14 +77,13 @@ def approval_program():
             pt.Assert(pt.Txn.assets[0] == pt.App.globalGet(pt.Bytes("asa"))),
             # not ready yet
             pt.Assert(pt.App.globalGet(pt.Bytes("ready")) == pt.Int(0)),
-            # make sure the ASA is transferred from the creator
-            pt.Assert(pt.Global.group_size() == pt.Int(2)),
-            pt.Assert(pt.Gtxn[0].type_enum() == pt.TxnType.AssetTransfer),
+            # make sure the ASA is transferred from the creator to the contract
+            pt.Assert(pt.Gtxn[3].type_enum() == pt.TxnType.AssetTransfer),
             pt.Assert(
-                pt.Gtxn[0].asset_receiver() == pt.Global.current_application_address()
+                pt.Gtxn[3].asset_receiver() == pt.Global.current_application_address()
             ),
-            pt.Assert(pt.Gtxn[0].asset_amount() == pt.Int(1)),
-            pt.Assert(pt.Gtxn[0].xfer_asset() == pt.App.globalGet(pt.Bytes("asa"))),
+            pt.Assert(pt.Gtxn[3].asset_amount() == pt.Int(1)),
+            pt.Assert(pt.Gtxn[3].xfer_asset() == pt.App.globalGet(pt.Bytes("asa"))),
             pt.App.globalPut(pt.Bytes("ready"), pt.Int(1)),
             pt.Return(pt.Int(1)),
         ]
@@ -150,10 +149,9 @@ def approval_program():
     exercise = pt.Seq(
         [
             # paid for the strike
-            pt.Assert(pt.Global.group_size() == pt.Int(2)),
-            pt.Assert(pt.Gtxn[0].type_enum() == pt.TxnType.Payment),
-            pt.Assert(pt.Gtxn[0].amount() == pt.App.globalGet(pt.Bytes("strike"))),
-            pt.Assert(pt.Gtxn[0].receiver() == pt.App.globalGet(pt.Bytes("creator"))),
+            pt.Assert(pt.Gtxn[1].type_enum() == pt.TxnType.Payment),
+            pt.Assert(pt.Gtxn[1].amount() == pt.App.globalGet(pt.Bytes("strike"))),
+            pt.Assert(pt.Gtxn[1].receiver() == pt.App.globalGet(pt.Bytes("creator"))),
             # correct buyer
             pt.Assert(pt.App.globalGet(pt.Bytes("buyer")) == pt.Txn.sender()),
             # not expired

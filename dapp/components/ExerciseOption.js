@@ -16,7 +16,6 @@ export default function ExerciseOption({ addToHistory }) {
     )
   }
   async function exerciseOption() {
-    const sp = await algodClient.getTransactionParams().do()
 
 
     const appInfo = await algodClient.getApplicationByID(appIndex).do();
@@ -47,21 +46,34 @@ export default function ExerciseOption({ addToHistory }) {
     console.log(strike);
 
 
-    const encoder = new TextEncoder()
+    const sp0 = await algodClient.getTransactionParams().do()
 
     const txn0Params = {
       from: activeAddress,
-      suggestedParams: sp,
+      suggestedParams: sp0,
+      assetIndex: asa,
+      to: activeAddress,
+      amount: 0,
+    }
+
+    const txn0 = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txn0Params)
+
+    const sp1 = await algodClient.getTransactionParams().do()
+    const encoder = new TextEncoder()
+
+    const txn1Params = {
+      from: activeAddress,
+      suggestedParams: sp1,
       to: creator,
       amount: strike,
     }
 
-    const txn0 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn0Params)
+    const txn1 = algosdk.makePaymentTxnWithSuggestedParamsFromObject(txn1Params)
 
     let sp2 = await algodClient.getTransactionParams().do()
     sp2.fee = 2000;
 
-    const txn1Params = {
+    const txn2Params = {
       from: activeAddress,
       onComplete: algosdk.OnApplicationComplete.NoOpOC,
       suggestedParams: sp2,
@@ -72,9 +84,9 @@ export default function ExerciseOption({ addToHistory }) {
       foreignAssets: [asa]
     }
 
-    const txn1 = algosdk.makeApplicationCallTxnFromObject(txn1Params)
+    const txn2 = algosdk.makeApplicationCallTxnFromObject(txn2Params)
 
-    const transactions = [txn0, txn1]
+    const transactions = [txn0, txn1, txn2]
     const txnGroup = algosdk.assignGroupID(transactions);
 
     const txnGroupEncoded = txnGroup.map((txn, index) => {
@@ -92,46 +104,6 @@ export default function ExerciseOption({ addToHistory }) {
     addToHistory('Exercised option with contract index ' + appIndex + '.')
   }
 
-  async function optIn() {
-    const sp = await algodClient.getTransactionParams().do()
-    const appInfo = await algodClient.getApplicationByID(appIndex).do();
-    let asa = 0;
-
-    for (const globalState of appInfo.params['global-state']) {
-      // decode b64 string key with Buffer
-      const globalKey = Buffer.from(globalState.key, 'base64').toString();
-      // decode b64 address value with encodeAddress and Buffer
-      const globalValue = algosdk.encodeAddress(
-        Buffer.from(globalState.value.bytes, 'base64')
-      );
-      if (globalKey == 'asa') {
-        asa = globalState.value.uint;
-      }
-    }
-
-    const txnParams = {
-      from: activeAddress,
-      suggestedParams: sp,
-      assetIndex: asa,
-      to: activeAddress,
-      amount: 0,
-    }
-
-    const txn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject(txnParams)
-
-    const txnEncoded = algosdk.encodeUnsignedTransaction(txn);
-
-    const signedTxn = await signTransactions(
-      [txnEncoded]
-    );
-
-    const { id } = await sendTransactions(signedTxn, 4)
-
-    const result = await algosdk.waitForConfirmation(algodClient, id, 4)
-
-    addToHistory('Opted in to receiving NFT with index ' + asa + '.')
-  }
-
   return (
     <div>
       If you bough an option, you can pay an amount of ALGO equal to the strike price to the seller of an option and receive the NFT before the expiration date.
@@ -141,16 +113,6 @@ export default function ExerciseOption({ addToHistory }) {
       <p>Contract Index:</p>
       <input type="text" value={appIndex} onChange={(e) => setAppIndex(e.target.value)}
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />
-      <div className="mt-4">
-        <button
-          onClick={() => {
-            optIn()
-          }}
-          className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
-        >
-          Opt In to Receiving NFT
-        </button>
-      </div>
       <div className="mt-4">
         <button
           onClick={() => {
