@@ -61,7 +61,7 @@ export default function MakeNFT({ addToHistory }) {
 
   return (
     <div>
-      Create a basic NFT if you don't have one yet and want to test the other features.
+      Create a basic NFT if you do not have one yet and want to test the other features.
 
       <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
 
