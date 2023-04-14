@@ -5,6 +5,8 @@ import ConfigureContract from '@/components/ConfigureContract'
 import MakeNFT from "./MakeNFT";
 import BuyOption from "./BuyOption";
 import ExerciseOption from "./ExerciseOption";
+import CancelOption from "./CancelOption";
+import ExpireOption from "./ExpireOption";
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
@@ -38,6 +40,14 @@ export default function Tabs() {
     {
       name: "Exercise Option",
       content: <ExerciseOption addToHistory={addToHistory} />
+    },
+    {
+      name: "Expire Option",
+      content: <ExpireOption addToHistory={addToHistory} />
+    },
+    {
+      name: "Cancel Option",
+      content: <CancelOption addToHistory={addToHistory} />
     }
   ]
 

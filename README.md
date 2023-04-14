@@ -12,23 +12,23 @@ An Algorand smart contract and dapp that allows NFT holders to sell options agai
 
 ## Progress
 
-- [ ] Smart Contract
+- [x] Smart Contract
   - [x] Transfer NFT to smart contract
     - [x] Implementation
     - [x] Tests
-  - [ ] Cancel option (if not bought)
+  - [x] Cancel option (if not bought)
     - [x] Implementation
-    - [ ] Tests
+    - [x] Tests
   - [x] Buy option
     - [x] Implementation
     - [x] Tests
   - [x] Exercise option
     - [x] Implementation
     - [x] Tests
-  - [ ] Expire option
+  - [x] Expire option
     - [x] Implementation
-    - [ ] Tests
-- [ ] Frontend
+    - [x] Tests
+- [x] Frontend
   - [x] Connect wallet
   - [x] Create option
   - [x] Configure option
@@ -37,5 +37,5 @@ An Algorand smart contract and dapp that allows NFT holders to sell options agai
   - [x] Set up custody
   - [x] Buy option
   - [x] Exercise option
-  - [ ] Cancel option
-  - [ ] Expire option
+  - [x] Cancel option
+  - [x] Expire option

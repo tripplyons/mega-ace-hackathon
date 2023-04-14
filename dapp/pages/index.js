@@ -20,7 +20,7 @@ export default function Home() {
             <li><strong className="font-bold">Buy Option:</strong> Buy another user's option</li>
             <li><strong className="font-bold">Exercise Option:</strong> Exercise an option you bought before it expires</li>
             <li><strong className="font-bold">Expire Option:</strong> Trigger option expiry of an option you sold</li>
-            <li><strong className="font-bold">Cancel Option:</strong> Cancel the option if no one has bought it</li>
+            <li><strong className="font-bold">Cancel Option:</strong> Cancel the sale of an option if no one has bought it</li>
           </ul>
         </div>
       </section>

@@ -209,7 +209,7 @@ def approval_program():
             pt.TxnField.asset_receiver, pt.App.globalGet(pt.Bytes("creator"))
         ),
         pt.InnerTxnBuilder.SetField(
-            pt.TxnField.asset_sender, pt.Global.current_application_address()
+            pt.TxnField.sender, pt.Global.current_application_address()
         ),
         pt.InnerTxnBuilder.SetField(pt.TxnField.fee, pt.Int(0)),
         pt.InnerTxnBuilder.Submit(),
