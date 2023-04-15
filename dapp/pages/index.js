@@ -13,7 +13,7 @@ export default function Home() {
         <ul className='mt-4'>
           <li><a
             className='text-blue-500 hover:text-blue-300 underline'
-            href="https://github.com/tripplyons/mega-ace-hackathon">GitHub</a></li>
+            href="https://github.com/tripplyons/mega-ace-hackathon">GitHub Repository</a></li>
         </ul>
       </header>
       <Tabs />

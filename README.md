@@ -1,16 +1,17 @@
 # MEGA-ACE Hackathon Project: NFT Call Options
 
-Live testnet interface: [https://mega-ace-hackathon.vercel.app/](https://mega-ace-hackathon.vercel.app/)
+- Live testnet interface: [link](https://mega-ace-hackathon.vercel.app/)
+- Writeup: [link](https://docs.google.com/document/d/1tKliCBK-vu15TBkzHTmNFl_5S8FH8mdb52kGDX0oVlQ/edit?usp=sharing)
 
 ## Overview
 
-An Algorand smart contract and dapp that allows NFT holders to sell options against their NFTs, and allows other users to buy those options.
+An Algorand smart contract and dapp that allows NFT holders to sell options against their NFTs, and allows NFT traders to buy those options.
 
 ## Option Mechanics
 
-- Equity settled: the option is settled by transferring the NFT to the buyer for a strike price
-- European style: this can only be done once, before the expiry date
 - Call option: the buyer has the right to buy the NFT from the seller for a strike price
+- Equity settled: the option is settled by transferring the NFT to the buyer for a strike price
+- American-style: this can only be done once, before the expiry date
 
 ## Usage Instructions
 
@@ -18,7 +19,7 @@ An Algorand smart contract and dapp that allows NFT holders to sell options agai
 
 - Python 3 and pip
 - Node.js and npm
-- A localnet node for algod (like [algokit](https://github.com/algorandfoundation/algokit-cli))
+- [algokit](https://github.com/algorandfoundation/algokit-cli)
 
 ### Setup
 
@@ -50,7 +51,7 @@ python3 -m pip install -r requirements.txt
 
 #### Compile the smart contract
 
-This step requires your localnet node to be running. If you are using algokit, you can start it with:
+This step requires your algokit localnet node to be running:
 
 ```sh
 algokit localnet start
