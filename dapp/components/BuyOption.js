@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as algosdk from "algosdk";
 import { useWallet } from "@txnlab/use-wallet";
 
-export default function BuyOption({ addToHistory }) {
+export default function BuyOption({ addToHistory, setLoading }) {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
 
   const [appIndex, setAppIndex] = useState("")
@@ -101,8 +101,16 @@ export default function BuyOption({ addToHistory }) {
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />
       <div className="mt-4">
         <button
-          onClick={() => {
-            buyOption()
+          onClick={async () => {
+            setLoading(true)
+            try {
+              await buyOption()
+            } catch (e) {
+              console.log(e)
+              alert("Please confirm the transaction in your wallet, and confirm that you are using the right parameters.")
+            } finally {
+              setLoading(false)
+            }
           }}
           className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
         >

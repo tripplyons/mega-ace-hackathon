@@ -4,7 +4,7 @@ import * as algosdk from "algosdk";
 import option from "@/src/option.json";
 import { useWallet } from "@txnlab/use-wallet";
 
-export default function MakeContract({ addToHistory }) {
+export default function MakeContract({ addToHistory, setLoading }) {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
 
   const [appIndex, setAppIndex] = useState(0)
@@ -75,8 +75,16 @@ export default function MakeContract({ addToHistory }) {
 
       <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
 
-      <button onClick={() => {
-        makeContract()
+      <button onClick={async () => {
+        setLoading(true)
+        try {
+          await makeContract()
+        } catch (e) {
+          console.log(e)
+          alert("Please confirm the transaction in your wallet, and confirm that you are using the right parameters.")
+        } finally {
+          setLoading(false)
+        }
       }}
         className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
       >Make Option Contract</button>

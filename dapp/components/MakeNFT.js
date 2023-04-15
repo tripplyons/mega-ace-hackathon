@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import * as algosdk from "algosdk";
 import { useWallet } from "@txnlab/use-wallet";
 
-export default function MakeNFT({ addToHistory }) {
+export default function MakeNFT({ addToHistory, setLoading }) {
   const { activeAddress, signTransactions, sendTransactions } = useWallet()
 
   const [asaIndex, setAsaIndex] = useState(0)
@@ -65,12 +65,20 @@ export default function MakeNFT({ addToHistory }) {
 
       <h3 className="text-2xl font-bold mt-4 mb-2">Settings</h3>
 
-      <p>NFT Name:</p>
+      <p>NFT Name (Max. 8 Characters):</p>
       <input type="text" value={name} onChange={(e) => setName(e.target.value)}
         className="border-2 border-gray-300 bg-white p-2 mt-2 rounded focus:outline-none" />
       <div className="mt-4 mb-2">
-        <button onClick={() => {
-          makeNFT()
+        <button onClick={async () => {
+          setLoading(true);
+          try {
+            await makeNFT()
+          } catch (e) {
+            console.log(e)
+            alert("Please confirm the transaction in your wallet, and confirm that you are using the right parameters.")
+          } finally {
+            setLoading(false)
+          }
         }}
           className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded"
         >Make NFT</button>

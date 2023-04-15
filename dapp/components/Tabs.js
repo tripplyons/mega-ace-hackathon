@@ -13,6 +13,7 @@ import ExpireOption from "./ExpireOption";
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState(0);
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   function saveHistory() {
     if (history.length > 0) {
@@ -44,6 +45,12 @@ export default function Tabs() {
     setHistory([...history, newHistory]);
   }
 
+  // wrapper to send to children
+  function _setLoading(newValue) {
+    console.log("setting loading to " + newValue)
+    setLoading(newValue);
+  }
+
   const tabs = [
     {
       name: "Connect Wallet",
@@ -51,41 +58,47 @@ export default function Tabs() {
     },
     {
       name: "Make NFT",
-      content: <MakeNFT addToHistory={addToHistory} />
+      content: <MakeNFT addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Make Contract",
-      content: <MakeContract addToHistory={addToHistory} />
+      content: <MakeContract addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Configure Contract",
-      content: <ConfigureContract addToHistory={addToHistory} />
+      content: <ConfigureContract addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Buy Option",
-      content: <BuyOption addToHistory={addToHistory} />
+      content: <BuyOption addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Exercise Option",
-      content: <ExerciseOption addToHistory={addToHistory} />
+      content: <ExerciseOption addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Expire Option",
-      content: <ExpireOption addToHistory={addToHistory} />
+      content: <ExpireOption addToHistory={addToHistory} setLoading={_setLoading} />
     },
     {
       name: "Cancel Option",
-      content: <CancelOption addToHistory={addToHistory} />
+      content: <CancelOption addToHistory={addToHistory} setLoading={_setLoading} />
     }
   ]
 
   return (
     <div>
-      <div className="flex flex-row">
+      <div className="flex flex-row flex-wrap">
         {tabs.map((tab, index) => (
           <button
             key={index}
-            onClick={() => setActiveTab(index)}
+            onClick={() => {
+              if (loading) {
+                alert("Please wait for the current transaction to complete.")
+              } else {
+                setActiveTab(index)
+              }
+            }}
             className={`${activeTab === index
               ? "bg-gray-100"
               : "bg-gray-300"
