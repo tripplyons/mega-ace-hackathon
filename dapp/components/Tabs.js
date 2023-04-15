@@ -117,7 +117,7 @@ export default function Tabs() {
         ))}
       </div>
       <div className="mt-10 bg-gray-100 p-10">
-        <h2 className="text-4xl font-bold">Transaction History</h2>
+        <h2 className="text-4xl font-bold mb-4">Transaction History</h2>
         {history.map((h, index) => (
           <div key={index} className="mt-4 p-4 bg-white">
             <p>{h}</p>

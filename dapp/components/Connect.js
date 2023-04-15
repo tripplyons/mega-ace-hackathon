@@ -18,7 +18,7 @@ export default function Connect() {
           <div key={'provider-' + provider.metadata.id} className='p-2 b-2'>
             <div className='flex flex-col space-y-4'>
               <h4 className='text-xl font-semibold'>
-                <img width={30} height={30} alt="" src={provider.metadata.icon} />
+                <img width={32} height={32} alt="" src={provider.metadata.icon} className='inline mr-2' />
                 {provider.metadata.name} {provider.isActive && (
                   <span className="text-green-500">[Active]</span>
                 )}
