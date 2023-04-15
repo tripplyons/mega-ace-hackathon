@@ -97,7 +97,11 @@ export default function Tabs() {
       </div>
       <div className="bg-gray-100 p-10">
         <h2 className="text-4xl font-bold mb-4">{tabs[activeTab].name}</h2>
-        {tabs[activeTab].content}
+        {tabs.map((tab, index) => (
+          <div key={index} className={`${activeTab === index ? "" : "hidden"}`}>
+            {tab.content}
+          </div>
+        ))}
       </div>
       <div className="mt-4 bg-gray-100 p-10">
         <h2 className="text-4xl font-bold">Transaction History</h2>
