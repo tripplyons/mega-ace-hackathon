@@ -1,4 +1,4 @@
-# Mega Ace Hackathon Project: NFT Call Options
+# MEGA-ACE Hackathon Project: NFT Call Options
 
 Live testnet interface: [https://mega-ace-hackathon.vercel.app/](https://mega-ace-hackathon.vercel.app/)
 
