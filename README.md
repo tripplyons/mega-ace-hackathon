@@ -1,5 +1,10 @@
 # MEGA-ACE Hackathon Project: NFT Call Options
 
+- 1st Place Winner in the RPI Hackathon
+- 3rd Place Winner in the Global Hackathon
+
+## Links
+
 - Live Testnet Interface: [link](https://mega-ace-hackathon.vercel.app/)
 - Writeup: [link](https://docs.google.com/document/d/1tKliCBK-vu15TBkzHTmNFl_5S8FH8mdb52kGDX0oVlQ/edit?usp=sharing)
 - Pitch Video: [link](https://youtu.be/W0JeFVygYyw)
